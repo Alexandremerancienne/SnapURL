@@ -7,8 +7,15 @@ from .models import ShortLink, Hit
 
 
 def get_country_code(ip):
-    response = requests.get(f"https://ipinfo.io/{ip}/json")
-    return response.json().get("country")
+    if not ip:
+        return ""
+
+    try:
+        response = requests.get(f"https://ipinfo.io/{ip}/json", timeout=2)
+        data = response.json()
+        return data.get("country") or ""
+    except Exception:
+        return ""
 
 
 def hash_ip(ip):
