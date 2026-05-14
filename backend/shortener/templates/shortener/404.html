@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Short link not found</title>
+    <style>
+        :root {
+            color-scheme: light;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f6f8;
+            color: #20262d;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            display: grid;
+            place-items: center;
+        }
+
+        main {
+            width: min(90vw, 480px);
+            padding: 32px;
+            border: 1px solid #d8dee5;
+            border-radius: 8px;
+            background: #ffffff;
+            box-shadow: 0 18px 45px rgba(29, 39, 51, 0.08);
+        }
+
+        .code {
+            margin: 0 0 12px;
+            color: #d13f32;
+            font-size: 0.875rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            margin: 0 0 12px;
+            font-size: 2rem;
+            line-height: 1.15;
+        }
+
+        p {
+            margin: 0;
+            color: #56616d;
+            line-height: 1.6;
+        }
+
+        code {
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: #eef2f6;
+            color: #20262d;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <p class="code">404</p>
+        <h1>Short link not found</h1>
+        <p>The slug <code>{{ slug }}</code> does not match any saved URL.</p>
+    </main>
+</body>
+</html>
