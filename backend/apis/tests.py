@@ -88,6 +88,12 @@ class LinkAPITests(APITestCase):
 
 
 class AuthAPITests(APITestCase):
+    def test_auth_endpoints_are_under_api_v1_base_path(self):
+        self.assertEqual(reverse("auth-register"), "/api/v1/auth/register/")
+        self.assertEqual(reverse("token_obtain_pair"), "/api/v1/auth/token/")
+        self.assertEqual(reverse("token_refresh"), "/api/v1/auth/token/refresh/")
+        self.assertEqual(reverse("auth-logout"), "/api/v1/auth/logout/")
+
     def test_register_creates_user_and_returns_user_info(self):
         data = {
             "username": "newuser",
