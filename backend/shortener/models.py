@@ -7,7 +7,7 @@ class ShortLink(models.Model):
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="links"
     )
     original_url = models.URLField(max_length=2048)
-    slug = models.CharField(max_length=30, unique=True, db_index=True)
+    slug = models.CharField(max_length=30, unique=True, db_index=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

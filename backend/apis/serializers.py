@@ -1,9 +1,13 @@
+import re
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from shortener.models import ShortLink
+
+from .utils import unique_slug
 
 User = get_user_model()
 
@@ -63,9 +67,26 @@ class LinkCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShortLink
         fields = ("id", "original_url", "slug", "created_at")
+        read_only_fields = ("id", "created_at")
+
+    def validate_slug(self, value):
+
+        if not re.fullmatch(r"[A-Za-z0-9-]{3,30}", value):
+            raise serializers.ValidationError(
+                "Slug must contain only letters, numbers and hyphens."
+            )
+
+        return value
+
+    def create(self, validated_data):
+
+        if not validated_data.get("slug"):
+            validated_data["slug"] = unique_slug()
+
+        return ShortLink.objects.create(**validated_data)
 
 
 class LinkSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShortLink
-        fields = ("original_url", "slug", "created_at")
+        fields = ("id", "original_url", "slug", "created_at")
