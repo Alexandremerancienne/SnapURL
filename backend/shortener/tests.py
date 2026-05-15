@@ -13,7 +13,7 @@ User = get_user_model()
 class ShortLinkTests(TestCase):
     @classmethod
     def setUpTestData(cls):
-        
+
         cls.user = User.objects.create_user(username="testuser", password="testpass")
 
         cls.shortlink = ShortLink.objects.create(
@@ -27,7 +27,7 @@ class ShortLinkTests(TestCase):
         self.assertEqual(self.shortlink.original_url, "https://www.dnevnik.bg/")
         self.assertEqual(self.shortlink.slug, "dnevnik-bg")
 
-    def test_redirect_short_link_view_with_not_found_link(self):
+    def test_redirect_short_link_view_with_no_link_found(self):
         response = self.client.get(
             reverse("redirect_short_link", kwargs={"slug": "unknown-slug"})
         )
@@ -37,7 +37,7 @@ class ShortLinkTests(TestCase):
         self.assertEqual(Hit.objects.count(), 0)
 
     @patch("shortener.views.get_country_code", return_value="BG")
-    def test_redirect_short_link_view_with_found_link(self, mock_get_country_code):
+    def test_redirect_short_link_view_with_original_url(self, mock_get_country_code):
         ip = "203.0.113.10"
         referrer = "https://example.com/source"
 
