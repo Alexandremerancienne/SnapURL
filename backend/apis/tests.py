@@ -1,5 +1,8 @@
+from datetime import datetime
+
 from django.contrib.auth import get_user_model
 from django.urls import reverse
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.test import APITestCase
 from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken
@@ -42,14 +45,40 @@ class LinkAPITests(APITestCase):
 
     def test_api_links_stats_view(self):
         self.client.force_authenticate(user=self.user)
-        Hit.objects.bulk_create(
+        hits = Hit.objects.bulk_create(
             [
-                Hit(link=self.link, ip_hash="visitor-1", country="BG"),
-                Hit(link=self.link, ip_hash="visitor-1", country="BG"),
-                Hit(link=self.link, ip_hash="visitor-2", country="FR"),
-                Hit(link=self.link, ip_hash="visitor-3", country="FR"),
+                Hit(
+                    link=self.link,
+                    ip_hash="visitor-1",
+                    country="BG",
+                    referrer="https://example.com/",
+                ),
+                Hit(
+                    link=self.link,
+                    ip_hash="visitor-1",
+                    country="BG",
+                    referrer="https://example.com/",
+                ),
+                Hit(
+                    link=self.link,
+                    ip_hash="visitor-2",
+                    country="FR",
+                    referrer="https://news.example/",
+                ),
+                Hit(
+                    link=self.link,
+                    ip_hash="visitor-3",
+                    country="FR",
+                    referrer="https://news.example/",
+                ),
             ]
         )
+        may_17 = timezone.make_aware(datetime(2026, 5, 17, 10, 0))
+        may_18 = timezone.make_aware(datetime(2026, 5, 18, 10, 0))
+        Hit.objects.filter(pk__in=[hits[0].pk, hits[1].pk, hits[2].pk]).update(
+            clicked_at=may_17
+        )
+        Hit.objects.filter(pk=hits[3].pk).update(clicked_at=may_18)
 
         response = self.client.get(reverse("links-stats", kwargs={"pk": self.link.pk}))
 
@@ -59,9 +88,17 @@ class LinkAPITests(APITestCase):
             {
                 "total_clicks": 4,
                 "unique_visitors": 3,
+                "daily_clicks": [
+                    {"date": may_18.date(), "count": 1},
+                    {"date": may_17.date(), "count": 3},
+                ],
                 "top_countries": [
                     {"country": "BG", "count": 2},
                     {"country": "FR", "count": 2},
+                ],
+                "top_referrers": [
+                    {"referrer": "https://example.com/", "count": 2},
+                    {"referrer": "https://news.example/", "count": 2},
                 ],
             },
         )
