@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken
 
-from shortener.models import ShortLink
+from shortener.models import Hit, ShortLink
 
 User = get_user_model()
 
@@ -39,6 +39,46 @@ class LinkAPITests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["original_url"], self.link.original_url)
         self.assertEqual(response.data["slug"], self.link.slug)
+
+    def test_api_links_stats_view(self):
+        self.client.force_authenticate(user=self.user)
+        Hit.objects.bulk_create(
+            [
+                Hit(link=self.link, ip_hash="visitor-1", country="BG"),
+                Hit(link=self.link, ip_hash="visitor-1", country="BG"),
+                Hit(link=self.link, ip_hash="visitor-2", country="FR"),
+                Hit(link=self.link, ip_hash="visitor-3", country="FR"),
+            ]
+        )
+
+        response = self.client.get(reverse("links-stats", kwargs={"pk": self.link.pk}))
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            response.data,
+            {
+                "total_clicks": 4,
+                "unique_visitors": 3,
+                "top_countries": [
+                    {"country": "BG", "count": 2},
+                    {"country": "FR", "count": 2},
+                ],
+            },
+        )
+
+    def test_api_links_stats_view_only_allows_owner(self):
+        other_user = User.objects.create_user(username="otheruser", password="testpass")
+        other_link = ShortLink.objects.create(
+            owner=other_user,
+            original_url="https://www.novinite.com/",
+            slug="novinite-com",
+        )
+        Hit.objects.create(link=other_link, ip_hash="visitor-1")
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get(reverse("links-stats", kwargs={"pk": other_link.pk}))
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_api_links_create_view(self):
         self.client.force_authenticate(user=self.user)
