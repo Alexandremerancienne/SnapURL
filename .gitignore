@@ -5,3 +5,39 @@ __pycache__/
 db.sqlite3
 .pytest_cache/
 postman/
+
+# Node / frontend dependencies
+node_modules/
+frontend/node_modules/
+
+# Frontend build output and Vite cache
+frontend/dist/
+frontend/dist-ssr/
+frontend/.vite/
+
+# Frontend logs
+frontend/logs/
+frontend/*.log
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/pnpm-debug.log*
+frontend/lerna-debug.log*
+
+# Local frontend environment files
+frontend/*.local
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
+
+# Editor and OS files
+.DS_Store
+frontend/.DS_Store
+frontend/.idea/
+frontend/.vscode/*
+!frontend/.vscode/extensions.json
+frontend/*.suo
+frontend/*.ntvs*
+frontend/*.njsproj
+frontend/*.sln
+frontend/*.sw?
