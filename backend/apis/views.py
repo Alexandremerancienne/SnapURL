@@ -1,4 +1,6 @@
+from django.db.models import Count
 from rest_framework import generics, status, viewsets
+from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -45,3 +47,26 @@ class LinkViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
+    @action(detail=True, methods=["get"], url_path="stats")
+    def stats(self, request, pk=None):
+        link = self.get_object()
+
+        return Response(
+            {
+                "total_clicks": link.hits.count(),
+                "unique_visitors": link.hits.values("ip_hash").distinct().count(),
+                "top_countries": list(
+                    link.hits.values("country")
+                    .annotate(count=Count("id"))
+                    .order_by("-count", "country")
+                ),
+                "top_referrers": list(
+                    link.hits.values("referrer")
+                    .annotate(count=Count("id"))
+                    .order_by("-count", "referrer")
+                ),
+            }
+        )
+
+
