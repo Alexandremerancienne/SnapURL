@@ -1,4 +1,5 @@
 from django.db.models import Count
+from django.db.models.functions import TruncDate
 from rest_framework import generics, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
@@ -56,11 +57,17 @@ class LinkViewSet(viewsets.ModelViewSet):
             {
                 "total_clicks": link.hits.count(),
                 "unique_visitors": link.hits.values("ip_hash").distinct().count(),
+                "daily_clicks": list(
+                    link.hits.annotate(date=TruncDate("clicked_at"))
+                    .values("date")
+                    .annotate(count=Count("id"))
+                    .order_by("-date")[:30]
+                ),
                 "top_countries": list(
                     link.hits.values("country")
                     .annotate(count=Count("id"))
                     .order_by("-count", "country")
-                ),
+                )[::-1],
                 "top_referrers": list(
                     link.hits.values("referrer")
                     .annotate(count=Count("id"))
@@ -68,5 +75,4 @@ class LinkViewSet(viewsets.ModelViewSet):
                 ),
             }
         )
-
 
