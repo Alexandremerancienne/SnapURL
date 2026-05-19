@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getUserName } from "../../api/dashboard";
 
-export default function DashboardHeader() {
+export default function AnalyticsHeader() {
   const [username, setUsername] = useState(null);
 
   useEffect(() => {
@@ -14,14 +14,14 @@ export default function DashboardHeader() {
   }, []);
 
   return (
-    <header className="dashboard-header">
+    <header className="analytics-header">
       <div>
         <h2>Welcome back, {username}</h2>
         <p>Here's what's happening with your links today.</p>
       </div>
 
-      <div className="dashboard-user">
-        <div className="dashboard-avatar">
+      <div className="analytics-user">
+        <div className="analytics-avatar">
           <span>{username ? username[0].toUpperCase() : ""}</span>
           <span></span>
         </div>
