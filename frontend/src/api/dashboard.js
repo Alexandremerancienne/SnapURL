@@ -24,6 +24,18 @@ export const getAnalyticsStats = async () => {
   return response.data;
 };
 
+export const getClicksStats = async () => {
+  const token = localStorage.getItem("access");
+
+  const response = await api.get("analytics/clicks/", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+};
+
 export const getUserName = async () => {
   const token = localStorage.getItem("access");
   const response = await api.get("dashboard/username/", {

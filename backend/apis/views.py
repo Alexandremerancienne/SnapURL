@@ -9,7 +9,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from shortener.models import ShortLink
+from shortener.models import ShortLink, Hit
 
 from .serializers import (
     LinkCreateSerializer,
@@ -123,3 +123,19 @@ class AnalyticsStatsView(APIView):
 
         return Response(stats)
 
+class AnalyticsClicksView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        clicks = (
+            Hit.objects.filter(link__owner=request.user)
+            .annotate(date=TruncDate("clicked_at"))
+            .values("date")
+            .annotate(count=Count("id"))
+            .order_by("date")
+        )
+
+        return Response({
+            "daily_clicks": list(clicks)
+        })
