@@ -570,7 +570,8 @@ code {
   text-decoration: none;
 }
 
-.dashboard-page {
+.dashboard-page,
+.analytics-page {
   min-height: 100vh;
   display: flex;
   background: var(--bg);
@@ -640,19 +641,22 @@ code {
   gap: 32px;
 }
 
-.dashboard-header {
+.dashboard-header,
+.analytics-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.dashboard-user {
+.dashboard-user,
+.analytics-user {
   display: flex;
   align-items: center;
   gap: 14px;
 }
 
-.dashboard-avatar {
+.dashboard-avatar,
+.analytics-avatar {
   width: 48px;
   height: 48px;
   border-radius: 50%;
@@ -734,4 +738,20 @@ td {
 
 .table-link-blue {
   color: #3b82f6;
+}
+
+.clicks-over-time-chart {
+  border: 1px solid var(--border);
+  padding: 20px;
+}
+
+.analytics-row {
+  display: flex;
+  gap: 20px;
+}
+
+.analytics-row-item {
+  border: 1px solid var(--border);
+  width: 100%;
+  padding: 20px;
 }

@@ -6,6 +6,9 @@ import {
   ChartColumnBig,
   Settings,
   LogOut,
+  QrCode,
+  Globe,
+  CreditCard,
 } from "lucide-react";
 
 export default function Sidebar() {
@@ -22,6 +25,10 @@ export default function Sidebar() {
     navigate("/analytics", { replace: true });
   };
 
+  const handleDashboard = () => {
+    navigate("/dashboard", { replace: true });
+  };
+
   return (
     <aside className="sidebar">
       <div className="sidebar-logo">
@@ -32,7 +39,7 @@ export default function Sidebar() {
         </div>
       </div>
       <nav className="sidebar-menu">
-        <button className="sidebar-item active">
+        <button className="sidebar-item active" onClick={handleDashboard}>
           <House size={18} />
           <span>Dashboard</span>
         </button>
@@ -48,8 +55,23 @@ export default function Sidebar() {
         </button>
 
         <button className="sidebar-item">
+          <QrCode size={18} />
+          <span>QR Codes</span>
+        </button>
+
+        <button className="sidebar-item">
+          <Globe size={18} />
+          <span>Custom Domains</span>
+        </button>
+
+        <button className="sidebar-item">
           <Settings size={18} />
           <span>Settings</span>
+        </button>
+
+        <button className="sidebar-item">
+          <CreditCard size={18} />
+          <span>Billing</span>
         </button>
 
         <button className="sidebar-item" onClick={handleLogout}>
