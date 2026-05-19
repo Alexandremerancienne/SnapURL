@@ -1,5 +1,4 @@
 import { Users, MousePointerClick, Clock } from "lucide-react";
-import { getDashboardStats } from "../../api/dashboard";
 
 export default function StatsSection() {
   return (
