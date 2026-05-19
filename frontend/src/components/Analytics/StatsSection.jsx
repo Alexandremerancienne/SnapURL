@@ -1,6 +1,20 @@
 import { Users, MousePointerClick, Clock } from "lucide-react";
+import { useEffect, useState } from "react";
+import { getAnalyticsStats } from "../../api/dashboard";
+import { formatDistanceToNow } from "date-fns";
 
 export default function StatsSection() {
+  const [stats, setStats] = useState(null);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      const data = await getAnalyticsStats();
+      setStats(data);
+    };
+
+    fetchStats();
+  }, []);
+
   return (
     <section className="stats-section">
       <div className="stat-card">
@@ -9,7 +23,7 @@ export default function StatsSection() {
         </div>
         <div className="stat-text">
           <p>Total Clicks</p>
-          <h2>?</h2>
+          <h2>{stats ? stats.total_clicks : "0"}</h2>
         </div>
       </div>
 
@@ -19,7 +33,7 @@ export default function StatsSection() {
         </div>
         <div className="stat-text">
           <p>Unique Visitors</p>
-          <h2>?</h2>
+          <h2>{stats ? stats.unique_visitors : "0"}</h2>
         </div>
       </div>
 
@@ -29,7 +43,13 @@ export default function StatsSection() {
         </div>
         <div className="stat-text">
           <p>Last Click</p>
-          <h2>?</h2>
+          <h2>
+            {stats?.last_click
+              ? formatDistanceToNow(new Date(stats.last_click), {
+                  addSuffix: true,
+                })
+              : "No activity"}
+          </h2>
         </div>
       </div>
     </section>
