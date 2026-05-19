@@ -8,6 +8,7 @@ class ShortLink(models.Model):
     )
     original_url = models.URLField(max_length=2048)
     slug = models.CharField(max_length=30, unique=True, db_index=True, blank=True)
+    short_url = models.CharField(unique=True, db_index=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

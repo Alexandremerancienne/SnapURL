@@ -1,6 +1,8 @@
 import random
 import string
 
+import tldextract
+from rest_framework.exceptions import ValidationError
 from shortener.models import ShortLink
 
 CHARSET = string.ascii_letters + string.digits
@@ -18,3 +20,11 @@ def unique_slug(length: int = 7) -> str:
             return slug
 
     raise ValueError("Could not generate a unique slug after 10 attempts")
+
+def unique_short_url(original_url: str, slug: str) -> str:
+    domain = tldextract.extract(original_url).registered_domain or "lnk.sh"
+    short_url = f"{domain}/{slug}"
+    if ShortLink.objects.filter(short_url=short_url).exists():
+        raise ValidationError("Short URL already exists")
+
+    return short_url

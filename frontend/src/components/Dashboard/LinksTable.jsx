@@ -33,7 +33,7 @@ export default function LinksTable() {
           {Array.isArray(links) &&
             links.map((link) => (
               <tr key={link.id}>
-                <td>{link.slug}</td>
+                <td>{link.short_url}</td>
                 <td>{link.original_url}</td>
                 <td>{link.hits_count}</td>
                 <td>{new Date(link.created_at).toLocaleDateString()}</td>
