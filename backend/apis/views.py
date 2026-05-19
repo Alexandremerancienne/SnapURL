@@ -11,8 +11,13 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from shortener.models import ShortLink
 
-from .serializers import (LinkCreateSerializer, LinkSerializer,
-                          LogoutSerializer, RegisterSerializer, UserSerializer)
+from .serializers import (
+    LinkCreateSerializer,
+    LinkSerializer,
+    LogoutSerializer,
+    RegisterSerializer,
+    UserSerializer,
+)
 
 
 class RegisterView(generics.CreateAPIView):
@@ -45,7 +50,7 @@ class LinkViewSet(viewsets.ModelViewSet):
         return ShortLink.objects.filter(owner=self.request.user).annotate(
             hits_count=Count("hits")
         )
-    
+
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
@@ -89,10 +94,15 @@ class DashboardStatsView(APIView):
         stats = user_links.aggregate(
             total_links=Count("id", distinct=True),
             total_clicks=Count("hits"),
-            last_month_clicks=Count(
-                "hits",
-                filter=Q(hits__clicked_at__gte=last_month)
-            )
+            last_month_clicks=Count("hits", filter=Q(hits__clicked_at__gte=last_month)),
         )
 
         return Response(stats)
+
+
+class DashboardUsernameView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        return Response({"username": request.user.username.capitalize()})

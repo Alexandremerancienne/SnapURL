@@ -81,7 +81,7 @@ class LinkCreateSerializer(serializers.ModelSerializer):
 
         if not validated_data.get("slug"):
             validated_data["slug"] = unique_slug()
-        
+
         original_url = validated_data["original_url"] or ""
         slug = validated_data["slug"]
         validated_data["short_url"] = unique_short_url(original_url, slug)
@@ -94,4 +94,4 @@ class LinkSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ShortLink
-        fields = ("id", "original_url", "short_url", "slug", "created_at" ,"hits_count")
+        fields = ("id", "original_url", "short_url", "slug", "created_at", "hits_count")
