@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import {
   House,
   Link2,
@@ -8,6 +9,15 @@ import {
 } from "lucide-react";
 
 export default function Sidebar() {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("access");
+    localStorage.removeItem("refresh");
+
+    navigate("/login", { replace: true });
+  };
+
   return (
     <aside className="sidebar">
       <div className="sidebar-logo">
@@ -38,7 +48,7 @@ export default function Sidebar() {
           <span>Settings</span>
         </button>
 
-        <button className="sidebar-item">
+        <button className="sidebar-item" onClick={handleLogout}>
           <LogOut size={18} />
           <span>Logout</span>
         </button>
