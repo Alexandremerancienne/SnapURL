@@ -21,6 +21,7 @@ def unique_slug(length: int = 7) -> str:
 
     raise ValueError("Could not generate a unique slug after 10 attempts")
 
+
 def unique_short_url(original_url: str, slug: str) -> str:
     domain = tldextract.extract(original_url).registered_domain or "lnk.sh"
     short_url = f"{domain}/{slug}"
