@@ -1,6 +1,6 @@
 from datetime import timedelta
 
-from django.db.models import Count, Sum, Q
+from django.db.models import Count, Q
 from django.db.models.functions import TruncDate
 from django.utils import timezone
 from rest_framework import generics, status, viewsets
@@ -42,8 +42,10 @@ class LinkViewSet(viewsets.ModelViewSet):
         return LinkSerializer
 
     def get_queryset(self):
-        return ShortLink.objects.filter(owner=self.request.user)
-
+        return ShortLink.objects.filter(owner=self.request.user).annotate(
+            hits_count=Count("hits")
+        )
+    
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
@@ -85,7 +87,7 @@ class DashboardStatsView(APIView):
         last_month = timezone.now() - timedelta(days=30)
 
         stats = user_links.aggregate(
-            total_links=Count("id"),
+            total_links=Count("id", distinct=True),
             total_clicks=Count("hits"),
             last_month_clicks=Count(
                 "hits",

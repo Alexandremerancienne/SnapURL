@@ -6,7 +6,7 @@ from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
 from shortener.models import ShortLink
 
-from .utils import unique_slug
+from .utils import unique_short_url, unique_slug
 
 User = get_user_model()
 
@@ -81,11 +81,17 @@ class LinkCreateSerializer(serializers.ModelSerializer):
 
         if not validated_data.get("slug"):
             validated_data["slug"] = unique_slug()
+        
+        original_url = validated_data["original_url"] or ""
+        slug = validated_data["slug"]
+        validated_data["short_url"] = unique_short_url(original_url, slug)
 
         return ShortLink.objects.create(**validated_data)
 
 
 class LinkSerializer(serializers.ModelSerializer):
+    hits_count = serializers.IntegerField(read_only=True)
+
     class Meta:
         model = ShortLink
-        fields = ("id", "original_url", "slug", "created_at")
+        fields = ("id", "original_url", "short_url", "slug", "created_at" ,"hits_count")
