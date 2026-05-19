@@ -1,6 +1,6 @@
 from datetime import timedelta
 
-from django.db.models import Count, Q
+from django.db.models import Count, Q, Max
 from django.db.models.functions import TruncDate
 from django.utils import timezone
 from rest_framework import generics, status, viewsets
@@ -105,4 +105,21 @@ class DashboardUsernameView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        return Response({"username": request.user.username.capitalize()})
+        return Response({"username": request.user.username})
+
+
+class AnalyticsStatsView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user_links = ShortLink.objects.filter(owner=request.user)
+
+        stats = user_links.aggregate(
+            total_clicks=Count("hits"),
+            unique_visitors=Count("hits__ip_hash", distinct=True),
+            last_click=Max("hits__clicked_at"),
+        )
+
+        return Response(stats)
+
