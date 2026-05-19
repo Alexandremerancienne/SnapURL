@@ -1,0 +1,49 @@
+import {
+  House,
+  Link2,
+  Link as LinkIcon,
+  ChartColumnBig,
+  Settings,
+  LogOut,
+} from "lucide-react";
+import { Link } from "react-router-dom";
+
+export default function Sidebar() {
+  return (
+    <aside className="sidebar">
+      <div className="sidebar-logo">
+        <LinkIcon size={30} className="logo-icon" />
+        <div className="logo-text">
+          <span className="logo-black">Snap</span>
+          <span className="logo-blue">URL</span>
+        </div>
+      </div>
+      <nav className="sidebar-menu">
+        <button className="sidebar-item active">
+          <House size={18} />
+          <span>Dashboard</span>
+        </button>
+
+        <button className="sidebar-item">
+          <Link2 size={18} className="rotate-icon" />
+          <span>My Links</span>
+        </button>
+
+        <button className="sidebar-item">
+          <ChartColumnBig size={18} />
+          <span>Analytics</span>
+        </button>
+
+        <button className="sidebar-item">
+          <Settings size={18} />
+          <span>Settings</span>
+        </button>
+
+        <button className="sidebar-item">
+          <LogOut size={18} />
+          <span>Logout</span>
+        </button>
+      </nav>
+    </aside>
+  );
+}
