@@ -87,7 +87,7 @@ class DashboardStatsView(APIView):
         last_month = timezone.now() - timedelta(days=30)
 
         stats = user_links.aggregate(
-            total_links=Count("id"),
+            total_links=Count("id", distinct=True),
             total_clicks=Count("hits"),
             last_month_clicks=Count(
                 "hits",
