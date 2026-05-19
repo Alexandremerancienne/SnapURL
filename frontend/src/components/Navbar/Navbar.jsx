@@ -1,11 +1,12 @@
-import { Link, LayoutGrid, User } from "lucide-react";
+import { LayoutGrid, Link as LinkIcon, User } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function Navbar() {
   return (
     <nav className="navbar">
       <div className="navbar-left">
         <div className="logo">
-          <Link size={30} className="logo-icon" />
+          <LinkIcon size={30} className="logo-icon" />
           <div className="logo-text">
             <span className="logo-black">Snap</span>
             <span className="logo-blue">URL</span>
@@ -14,15 +15,15 @@ export default function Navbar() {
       </div>
 
       <div className="navbar-right">
-        <a href="/dashboard" className="nav-item">
+        <Link to="/dashboard" className="nav-item">
           <LayoutGrid size={18} className="nav-icon" />
           <span className="nav-text">Dashboard</span>
-        </a>
+        </Link>
 
-        <a href="/login" className="nav-item">
+        <Link to="/login" className="nav-item">
           <User size={18} className="nav-icon" />
           <span className="nav-text">Login</span>
-        </a>
+        </Link>
       </div>
     </nav>
   );
