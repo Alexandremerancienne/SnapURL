@@ -9,4 +9,5 @@ router.register("links", LinkViewSet, basename="links")
 
 urlpatterns = router.urls + [
     path("dashboard/stats/", DashboardStatsView.as_view(), name="dashboard-stats"),
+    path("dashboard/links/", LinkViewSet.as_view({"get": "list"}), name="dashboard-links"),
 ]

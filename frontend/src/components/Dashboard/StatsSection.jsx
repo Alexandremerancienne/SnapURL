@@ -8,7 +8,6 @@ export default function StatsSection() {
   useEffect(() => {
     const fetchStats = async () => {
       const data = await getDashboardStats();
-      console.log("Dashboard stats:", data);
       setStats(data);
     };
 
