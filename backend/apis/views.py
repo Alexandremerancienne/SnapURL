@@ -1,11 +1,12 @@
 from django.db.models import Count
 from django.db.models.functions import TruncDate
+from django.utils import timezone
 from rest_framework import generics, status, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from shortener.models import ShortLink
 
 from .serializers import (
@@ -76,3 +77,23 @@ class LinkViewSet(viewsets.ModelViewSet):
             }
         )
 
+
+class DashboardStatsView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user_links = ShortLink.objects.filter(owner=request.user)
+
+        total_links = user_links.count()
+        total_clicks = sum(link.hits.count() for link in user_links)
+        last_month_clicks = user_links.filter(
+            hits__clicked_at__gte=timezone.now() - timezone.timedelta(days=30)
+        ).count()
+        return Response(
+            {
+                "total_links": total_links,
+                "total_clicks": total_clicks,
+                "last_month_clicks": last_month_clicks,
+            }
+        )

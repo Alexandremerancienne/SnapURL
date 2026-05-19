@@ -6,7 +6,6 @@ from django.utils import timezone
 from rest_framework import status
 from rest_framework.test import APITestCase
 from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken
-
 from shortener.models import Hit, ShortLink
 
 User = get_user_model()
