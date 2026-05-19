@@ -86,6 +86,8 @@ class LinkCreateSerializer(serializers.ModelSerializer):
 
 
 class LinkSerializer(serializers.ModelSerializer):
+    hits_count = serializers.IntegerField(read_only=True)
+
     class Meta:
         model = ShortLink
-        fields = ("id", "original_url", "slug", "created_at")
+        fields = ("id", "original_url", "slug", "created_at" ,"hits_count")

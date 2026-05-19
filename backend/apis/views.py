@@ -42,8 +42,10 @@ class LinkViewSet(viewsets.ModelViewSet):
         return LinkSerializer
 
     def get_queryset(self):
-        return ShortLink.objects.filter(owner=self.request.user)
-
+        return ShortLink.objects.filter(owner=self.request.user).annotate(
+            hits_count=Count("hits")
+        )
+    
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
