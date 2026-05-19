@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Lock, LogIn, User } from "lucide-react";
 import { login } from "../../api/auth";
 
 export default function LoginForm() {
+  const navigate = useNavigate();
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -11,7 +13,11 @@ export default function LoginForm() {
     e.preventDefault();
     try {
       const data = await login({ username, password });
-      console.log("Login successful:", data);
+      
+      localStorage.setItem("access", data.access);
+      localStorage.setItem("refresh", data.refresh);
+
+      navigate("/dashboard");
     } catch (error) {
       console.error("Login failed:", error);
     } finally {
