@@ -1,6 +1,6 @@
 from datetime import timedelta
 
-from django.db.models import Count, Sum, Q
+from django.db.models import Count, Q
 from django.db.models.functions import TruncDate
 from django.utils import timezone
 from rest_framework import generics, status, viewsets
