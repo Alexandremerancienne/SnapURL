@@ -1,6 +1,20 @@
 import { Link as LinkIcon, MousePointer, Calendar } from "lucide-react";
+import { useEffect, useState } from "react";
+import { getDashboardStats } from "../../api/dashboard";
 
 export default function StatsSection() {
+  const [stats, setStats] = useState(null);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      const data = await getDashboardStats();
+      console.log("Dashboard stats:", data);
+      setStats(data);
+    };
+
+    fetchStats();
+  }, []);
+
   return (
     <section className="stats-section">
       <div className="stat-card">
@@ -9,7 +23,7 @@ export default function StatsSection() {
         </div>
         <div className="stat-text">
           <p>Total Links</p>
-          <h2>12</h2>
+          <h2>{stats ? stats.total_links : "0"}</h2>
         </div>
         <div className="stat-link">
           <a href="#" className="stat-link">
@@ -24,11 +38,11 @@ export default function StatsSection() {
         </div>
         <div className="stat-text">
           <p>Total Clicks</p>
-          <h2>1,240</h2>
+          <h2>{stats ? stats.total_clicks : "0"}</h2>
         </div>
         <div className="stat-link">
           <a href="#" className="stat-link">
-            View all your clicks
+            View analytics
           </a>
         </div>
       </div>
@@ -39,11 +53,11 @@ export default function StatsSection() {
         </div>
         <div className="stat-text">
           <p>This Month</p>
-          <h2>340</h2>
+          <h2>{stats ? stats.last_month_clicks : "0"}</h2>
         </div>
         <div className="stat-link">
           <a href="#" className="stat-link">
-            View monthly report your monthly stats
+            View monthly report
           </a>
         </div>
       </div>

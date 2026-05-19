@@ -15,25 +15,55 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='ShortLink',
+            name="ShortLink",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('original_url', models.URLField(max_length=2048)),
-                ('slug', models.CharField(db_index=True, max_length=30, unique=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('owner', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='links', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("original_url", models.URLField(max_length=2048)),
+                ("slug", models.CharField(db_index=True, max_length=30, unique=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "owner",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="links",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Hit',
+            name="Hit",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('clicked_at', models.DateTimeField(auto_now_add=True, db_index=True)),
-                ('country', models.CharField(blank=True, max_length=2)),
-                ('referrer', models.CharField(blank=True, max_length=512)),
-                ('ip_hash', models.CharField(blank=True, max_length=64)),
-                ('link', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='hits', to='shortener.shortlink')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("clicked_at", models.DateTimeField(auto_now_add=True, db_index=True)),
+                ("country", models.CharField(blank=True, max_length=2)),
+                ("referrer", models.CharField(blank=True, max_length=512)),
+                ("ip_hash", models.CharField(blank=True, max_length=64)),
+                (
+                    "link",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="hits",
+                        to="shortener.shortlink",
+                    ),
+                ),
             ],
         ),
     ]
