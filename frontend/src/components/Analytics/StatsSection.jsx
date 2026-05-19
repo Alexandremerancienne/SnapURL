@@ -3,17 +3,6 @@ import { useEffect, useState } from "react";
 import { getDashboardStats } from "../../api/dashboard";
 
 export default function StatsSection() {
-  const [stats, setStats] = useState(null);
-
-  useEffect(() => {
-    const fetchStats = async () => {
-      const data = await getDashboardStats();
-      setStats(data);
-    };
-
-    fetchStats();
-  }, []);
-
   return (
     <section className="stats-section">
       <div className="stat-card">
