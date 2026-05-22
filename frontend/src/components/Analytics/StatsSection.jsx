@@ -1,6 +1,6 @@
 import { Users, MousePointerClick, Clock } from "lucide-react";
 import { useEffect, useState } from "react";
-import { getAnalyticsStats } from "../../api/dashboard";
+import { getAnalyticsStats } from "../../api/analytics";
 import { formatDistanceToNow } from "date-fns";
 
 export default function StatsSection() {

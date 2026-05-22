@@ -20,6 +20,7 @@ class LinkAPITests(APITestCase):
             owner=cls.user,
             original_url="https://www.dnevnik.bg/",
             slug="dnevnik-bg",
+            short_url="http://localhost:8000/dnevnik-bg",
         )
 
     def test_api_links_list_view(self):
@@ -108,6 +109,7 @@ class LinkAPITests(APITestCase):
             owner=other_user,
             original_url="https://www.novinite.com/",
             slug="novinite-com",
+            short_url="http://localhost:8000/novinite-com",
         )
         Hit.objects.create(link=other_link, ip_hash="visitor-1")
         self.client.force_authenticate(user=self.user)
@@ -128,8 +130,25 @@ class LinkAPITests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data["original_url"], data["original_url"])
+        self.assertIn("short_url", response.data)
         self.assertEqual(response.data["slug"], data["slug"])
         self.assertEqual(ShortLink.objects.count(), 2)
+        self.assertEqual(ShortLink.objects.get(slug=data["slug"]).owner, self.user)
+
+    def test_api_links_create_view_allows_anonymous_user(self):
+        data = {
+            "original_url": "https://www.novinite.com/",
+            "slug": "novinite-com",
+        }
+
+        response = self.client.post(reverse("links-list"), data=data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data["original_url"], data["original_url"])
+        self.assertIn("short_url", response.data)
+        self.assertEqual(response.data["slug"], data["slug"])
+        self.assertEqual(ShortLink.objects.count(), 2)
+        self.assertIsNone(ShortLink.objects.get(slug=data["slug"]).owner)
 
     def test_api_links_update_view(self):
         self.client.force_authenticate(user=self.user)

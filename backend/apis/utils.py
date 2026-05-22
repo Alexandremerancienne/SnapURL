@@ -1,4 +1,4 @@
-import random
+import secrets
 import string
 
 import tldextract
@@ -9,7 +9,7 @@ CHARSET = string.ascii_letters + string.digits
 
 
 def generate_slug(length: int = 7) -> str:
-    return "".join(random.choices(CHARSET, k=length))
+    return "".join(secrets.choice(CHARSET) for _ in range(length))
 
 
 def unique_slug(length: int = 7) -> str:
