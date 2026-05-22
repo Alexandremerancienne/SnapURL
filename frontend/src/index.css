@@ -746,6 +746,17 @@ code {
   padding: 24px;
 }
 
+.links-table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.links-table-header-right {
+  display: flex;
+  gap: 12px;
+}
+
 table {
   border: 1px solid var(--border);
   width: 100%;
@@ -786,13 +797,51 @@ td {
   align-items: center;
 }
 
-.qr-wrapper button {
-  margin-top: 12px;
-  padding: 10px 16px;
+.links-table-header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.links-search,
+.create-link-btn {
+  height: 40px;
+  box-sizing: border-box;
+}
+
+.links-search:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+.links-search {
+  padding-left: 34px;
+  height: 40px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  width: 100%;
+}
+
+.create-link-btn {
+  padding: 0 14px;
   background: blue;
   color: white;
   border: none;
   border-radius: 8px;
-  cursor: pointer;
   font-weight: 600;
+  cursor: pointer;
+}
+
+.search-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 240px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 10px;
+  color: #9ca3af;
+  pointer-events: none;
 }
