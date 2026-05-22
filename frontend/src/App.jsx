@@ -6,6 +6,7 @@ import RegisterPage from "./pages/Register";
 import AnalyticsPage from "./pages/Analytics";
 import Dashboard from "./pages/Dashboard";
 import LinksPage from "./pages/Links";
+import CreateLinkPage from "./pages/CreateLink";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/analytics" element={<AnalyticsPage />} />
         <Route path="/links" element={<LinksPage />} />
+        <Route path="/create" element={<CreateLinkPage />} />
         <Route
           path="/dashboard"
           element={
