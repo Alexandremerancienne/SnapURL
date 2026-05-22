@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { getDashboardLinks } from "../../api/dashboard";
+import { Search } from "lucide-react";
 
 export default function LinksTable() {
   const [links, setLinks] = useState(null);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     const fetchLinks = async () => {
@@ -13,10 +15,38 @@ export default function LinksTable() {
     fetchLinks();
   }, []);
 
+  const filteredLinks = Array.isArray(links)
+    ? links.filter(
+        (link) =>
+          link.short_url.toLowerCase().includes(search.toLowerCase()) ||
+          link.original_url.toLowerCase().includes(search.toLowerCase()),
+      )
+    : [];
+
   return (
     <section className="links-table">
       <div className="links-table-header">
-        <h2>My Links</h2>
+        <div className="links-table-header-left">
+          <h2>My Links</h2>
+        </div>
+
+        <div className="links-table-header-right">
+          <div className="search-wrapper">
+            <Search size={18} className="search-icon" />
+
+            <input
+              className="links-search"
+              type="text"
+              placeholder="Search links..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+
+          <button className="create-link-btn" onClick={() => {}}>
+            + Create New Link
+          </button>
+        </div>
       </div>
 
       <table>
@@ -30,8 +60,8 @@ export default function LinksTable() {
         </thead>
 
         <tbody>
-          {Array.isArray(links) &&
-            links.map((link) => (
+          {Array.isArray(filteredLinks) &&
+            filteredLinks.map((link) => (
               <tr key={link.id}>
                 <td className="table-link-blue">{link.short_url}</td>
                 <td>{link.original_url}</td>
