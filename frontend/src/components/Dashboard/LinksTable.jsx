@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { getDashboardLinks } from "../../api/dashboard";
 import { Search } from "lucide-react";
+import UrlShortener from "../UrlShortener/UrlShortener";
 
 export default function LinksTable() {
   const [links, setLinks] = useState(null);
   const [search, setSearch] = useState("");
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const fetchLinks = async () => {
@@ -14,6 +16,10 @@ export default function LinksTable() {
 
     fetchLinks();
   }, []);
+
+  const handleCreateLink = () => {
+    setShowModal(true);
+  };
 
   const filteredLinks = Array.isArray(links)
     ? links.filter(
@@ -43,7 +49,7 @@ export default function LinksTable() {
             />
           </div>
 
-          <button className="create-link-btn" onClick={() => {}}>
+          <button className="create-link-btn" onClick={handleCreateLink}>
             + Create New Link
           </button>
         </div>
@@ -71,6 +77,35 @@ export default function LinksTable() {
             ))}
         </tbody>
       </table>
+
+      {showModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <button className="modal-close" onClick={() => setShowModal(false)}>
+              ×
+            </button>
+
+            <h2>Create New Link</h2>
+
+            <UrlShortener
+              onLinkCreated={(createdLink) => {
+                setLinks((prev) => [
+                  {
+                    id: createdLink.id,
+                    short_url: createdLink.short_url,
+                    original_url: createdLink.original_url,
+                    hits_count: createdLink.hits_count ?? 0,
+                    created_at: createdLink.created_at,
+                  },
+                  ...(prev ?? []),
+                ]);
+
+                setShowModal(false);
+              }}
+            />
+          </div>
+        </div>
+      )}
     </section>
   );
 }

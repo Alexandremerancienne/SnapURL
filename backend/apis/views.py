@@ -57,7 +57,7 @@ class LinkViewSet(viewsets.ModelViewSet):
 
         return ShortLink.objects.filter(owner=self.request.user).annotate(
             hits_count=Count("hits")
-        )
+        ).order_by("-created_at")
 
     def perform_create(self, serializer):
         owner = self.request.user if self.request.user.is_authenticated else None
