@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, Zap } from "lucide-react";
 import { createShortLink } from "../../api/home";
 
-export default function UrlShortener({ setShortUrl }) {
+export default function UrlShortener({ setShortUrl, onLinkCreated }) {
   const [url, setUrl] = useState("");
 
   const handleSubmit = async (e) => {
@@ -13,7 +13,8 @@ export default function UrlShortener({ setShortUrl }) {
         original_url: url,
       });
 
-      setShortUrl(data.short_url);
+      setShortUrl?.(data.short_url);
+      onLinkCreated?.(data);
       setUrl("");
     } catch (err) {
       console.error("Error creating link:", err);
