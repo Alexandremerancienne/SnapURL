@@ -29,6 +29,10 @@ export default function Sidebar() {
     navigate("/dashboard", { replace: true });
   };
 
+  const handleMyLinks = () => {
+    navigate("/links", { replace: true });
+  };
+
   return (
     <aside className="sidebar">
       <div className="sidebar-logo">
@@ -44,7 +48,7 @@ export default function Sidebar() {
           <span>Dashboard</span>
         </button>
 
-        <button className="sidebar-item">
+        <button className="sidebar-item" onClick={handleMyLinks}>
           <Link2 size={18} className="rotate-icon" />
           <span>My Links</span>
         </button>
