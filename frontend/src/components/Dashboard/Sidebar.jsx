@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   House,
   Link2,
@@ -10,6 +10,10 @@ import {
 
 export default function Sidebar() {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const getItemClassName = (path) =>
+    location.pathname === path ? "sidebar-item active" : "sidebar-item";
 
   const handleLogout = () => {
     localStorage.removeItem("access");
@@ -40,17 +44,17 @@ export default function Sidebar() {
         </div>
       </div>
       <nav className="sidebar-menu">
-        <button className="sidebar-item active" onClick={handleDashboard}>
+        <button className={getItemClassName("/dashboard")} onClick={handleDashboard}>
           <House size={18} />
           <span>Dashboard</span>
         </button>
 
-        <button className="sidebar-item" onClick={handleMyLinks}>
+        <button className={getItemClassName("/links")} onClick={handleMyLinks}>
           <Link2 size={18} className="rotate-icon" />
           <span>My Links</span>
         </button>
 
-        <button className="sidebar-item" onClick={handleAnalytics}>
+        <button className={getItemClassName("/analytics")} onClick={handleAnalytics}>
           <ChartColumnBig size={18} />
           <span>Analytics</span>
         </button>
