@@ -25,8 +25,8 @@ export default function StatsSection() {
           <h2>{stats ? stats.total_links : "0"}</h2>
         </div>
         <div className="stat-link">
-          <a href="#" className="stat-link">
-            View all your links
+          <a href="/links" className="stat-link">
+            View all your links {">"}
           </a>
         </div>
       </div>
@@ -40,8 +40,8 @@ export default function StatsSection() {
           <h2>{stats ? stats.total_clicks : "0"}</h2>
         </div>
         <div className="stat-link">
-          <a href="#" className="stat-link">
-            View analytics
+          <a href="/analytics" className="stat-link">
+            View analytics {">"}
           </a>
         </div>
       </div>
@@ -56,7 +56,7 @@ export default function StatsSection() {
         </div>
         <div className="stat-link">
           <a href="#" className="stat-link">
-            View monthly report
+            View monthly report {">"}
           </a>
         </div>
       </div>
