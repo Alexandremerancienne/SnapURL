@@ -20,6 +20,7 @@ class ShortLinkTests(TestCase):
             owner=cls.user,
             original_url="https://www.dnevnik.bg/",
             slug="dnevnik-bg",
+            short_url="http://localhost:8000/dnevnik-bg",
         )
 
     def test_shortlink_content(self):

@@ -65,8 +65,8 @@ class LogoutSerializer(serializers.Serializer):
 class LinkCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShortLink
-        fields = ("id", "original_url", "slug", "created_at")
-        read_only_fields = ("id", "created_at")
+        fields = ("id", "original_url", "short_url", "slug", "created_at")
+        read_only_fields = ("id", "short_url", "created_at")
 
     def validate_slug(self, value):
 

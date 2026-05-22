@@ -4,7 +4,11 @@ from django.db import models
 
 class ShortLink(models.Model):
     owner = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="links"
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        related_name="links",
+        null=True,
+        blank=True,
     )
     original_url = models.URLField(max_length=2048)
     slug = models.CharField(max_length=30, unique=True, db_index=True, blank=True)

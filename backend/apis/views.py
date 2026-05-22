@@ -41,18 +41,27 @@ class LogoutView(APIView):
 
 
 class LinkViewSet(viewsets.ModelViewSet):
+    def get_permissions(self):
+        if self.action == "create":
+            return [AllowAny()]
+        return [IsAuthenticated()]
+
     def get_serializer_class(self):
         if self.action == "create":
             return LinkCreateSerializer
         return LinkSerializer
 
     def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            return ShortLink.objects.none()
+
         return ShortLink.objects.filter(owner=self.request.user).annotate(
             hits_count=Count("hits")
         )
 
     def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+        owner = self.request.user if self.request.user.is_authenticated else None
+        serializer.save(owner=owner)
 
     @action(detail=True, methods=["get"], url_path="stats")
     def stats(self, request, pk=None):
@@ -72,7 +81,7 @@ class LinkViewSet(viewsets.ModelViewSet):
                     link.hits.values("country")
                     .annotate(count=Count("id"))
                     .order_by("-count", "country")
-                )[::-1],
+                ),
                 "top_referrers": list(
                     link.hits.values("referrer")
                     .annotate(count=Count("id"))
