@@ -1,12 +1,23 @@
 import { useState } from "react";
 import { Link, Zap } from "lucide-react";
+import { createShortLink } from "../../api/home";
 
-export default function UrlShortener() {
+export default function UrlShortener({ setShortUrl }) {
   const [url, setUrl] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("URL:", url);
+
+    try {
+      const data = await createShortLink({
+        original_url: url,
+      });
+
+      setShortUrl(data.short_url);
+      setUrl("");
+    } catch (err) {
+      console.error("Error creating link:", err);
+    }
   };
 
   return (

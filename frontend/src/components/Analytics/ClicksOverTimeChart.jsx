@@ -7,7 +7,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { useEffect, useState } from "react";
-import { getClicksStats } from "../../api/dashboard";
+import { getClicksStats } from "../../api/analytics";
 
 export default function ClicksOverTimeChart() {
   const [stats, setStats] = useState(null);
