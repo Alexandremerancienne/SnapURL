@@ -22,6 +22,14 @@ export default function Sidebar() {
     navigate("/analytics", { replace: true });
   };
 
+  const handleMyLinks = () => {
+    navigate("/links", { replace: true });
+  };
+
+  const handleDashboard = () => {
+    navigate("/dashboard", { replace: true });
+  };
+
   return (
     <aside className="sidebar">
       <div className="sidebar-logo">
@@ -32,12 +40,12 @@ export default function Sidebar() {
         </div>
       </div>
       <nav className="sidebar-menu">
-        <button className="sidebar-item active">
+        <button className="sidebar-item active" onClick={handleDashboard}>
           <House size={18} />
           <span>Dashboard</span>
         </button>
 
-        <button className="sidebar-item">
+        <button className="sidebar-item" onClick={handleMyLinks}>
           <Link2 size={18} className="rotate-icon" />
           <span>My Links</span>
         </button>

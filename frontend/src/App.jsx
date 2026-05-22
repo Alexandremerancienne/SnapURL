@@ -5,6 +5,7 @@ import LoginPage from "./pages/Login";
 import RegisterPage from "./pages/Register";
 import AnalyticsPage from "./pages/Analytics";
 import Dashboard from "./pages/Dashboard";
+import LinksPage from "./pages/Links";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/analytics" element={<AnalyticsPage />} />
+        <Route path="/links" element={<LinksPage />} />
         <Route
           path="/dashboard"
           element={
