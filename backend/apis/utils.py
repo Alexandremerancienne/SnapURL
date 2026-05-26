@@ -22,10 +22,16 @@ def unique_slug(length: int = 7) -> str:
     raise ValueError("Could not generate a unique slug after 10 attempts")
 
 
-def unique_short_url(original_url: str, slug: str) -> str:
+def unique_short_url(original_url: str, slug: str, exclude_pk: int | None = None) -> str:
     domain = tldextract.extract(original_url).registered_domain or "lnk.sh"
     short_url = f"{domain}/{slug}"
-    if ShortLink.objects.filter(short_url=short_url).exists():
+    queryset = ShortLink.objects.filter(short_url=short_url)
+
+    if exclude_pk is not None:
+        queryset = queryset.exclude(pk=exclude_pk)
+
+    if queryset.exists():
         raise ValidationError("Short URL already exists")
 
     return short_url
+

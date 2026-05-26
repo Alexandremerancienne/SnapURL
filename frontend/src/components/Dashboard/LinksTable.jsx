@@ -1,12 +1,20 @@
 import { useEffect, useState } from "react";
-import { getDashboardLinks } from "../../api/dashboard";
-import { Search } from "lucide-react";
+import {
+  getDashboardLinks,
+  deleteDashboardLink,
+  updateDashboardLink,
+} from "../../api/dashboard";
+import { Search, Pencil, Trash2, Copy, Check, X } from "lucide-react";
 import UrlShortener from "../UrlShortener/UrlShortener";
 
 export default function LinksTable() {
   const [links, setLinks] = useState(null);
   const [search, setSearch] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [copiedId, setCopiedId] = useState(null);
+  const [editingLinkId, setEditingLinkId] = useState(null);
+  const [editingOriginalUrl, setEditingOriginalUrl] = useState("");
+  const [savingLinkId, setSavingLinkId] = useState(null);
 
   useEffect(() => {
     const fetchLinks = async () => {
@@ -28,6 +36,87 @@ export default function LinksTable() {
           link.original_url.toLowerCase().includes(search.toLowerCase()),
       )
     : [];
+
+  const handleEdit = (link) => {
+    setEditingLinkId(link.id);
+    setEditingOriginalUrl(link.original_url);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingLinkId(null);
+    setEditingOriginalUrl("");
+  };
+
+  const handleSaveEdit = async (linkId) => {
+    const trimmedOriginalUrl = editingOriginalUrl.trim();
+
+    if (!trimmedOriginalUrl) {
+      window.alert("Original URL is required.");
+      return;
+    }
+
+    setSavingLinkId(linkId);
+
+    try {
+      const updatedLink = await updateDashboardLink(linkId, {
+        original_url: trimmedOriginalUrl,
+      });
+
+      setLinks((prev) =>
+        prev.map((link) =>
+          link.id === linkId
+            ? {
+                ...link,
+                ...updatedLink,
+                hits_count: updatedLink.hits_count ?? link.hits_count,
+              }
+            : link,
+        ),
+      );
+      handleCancelEdit();
+    } catch (error) {
+      console.error("Error updating link:", error);
+      window.alert("Could not update this link.");
+    } finally {
+      setSavingLinkId(null);
+    }
+  };
+
+  const handleEditKeyDown = (event, linkId) => {
+    if (event.key === "Enter") {
+      handleSaveEdit(linkId);
+    }
+
+    if (event.key === "Escape") {
+      handleCancelEdit();
+    }
+  };
+
+  const handleDelete = async (linkId) => {
+    const confirmDelete = window.confirm("Delete this link?");
+
+    if (!confirmDelete) return;
+
+    try {
+      await deleteDashboardLink(linkId);
+
+      setLinks((prev) => prev.filter((link) => link.id !== linkId));
+    } catch (error) {
+      console.error("Error deleting link:", error);
+    }
+  };
+
+  const handleCopy = async (shortUrl, id) => {
+    try {
+      await navigator.clipboard.writeText(shortUrl);
+
+      setCopiedId(id);
+
+      setTimeout(() => setCopiedId(null), 2000);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <section className="links-table">
@@ -62,6 +151,7 @@ export default function LinksTable() {
             <th>Original URL</th>
             <th>Clicks</th>
             <th>Create Date</th>
+            <th>Actions</th>
           </tr>
         </thead>
 
@@ -69,10 +159,56 @@ export default function LinksTable() {
           {Array.isArray(filteredLinks) &&
             filteredLinks.map((link) => (
               <tr key={link.id}>
-                <td className="table-link-blue">{link.short_url}</td>
-                <td>{link.original_url}</td>
+                <td className="table-link-blue table-actions">
+                  {link.short_url}{" "}
+                  <button onClick={() => handleCopy(link.short_url, link.id)}>
+                    <div className="copy-content">
+                      <Copy size={18} />
+                      {copiedId === link.id ? "Copied!" : ""}
+                    </div>
+                  </button>
+                </td>
+                <td>
+                  {editingLinkId === link.id ? (
+                    <input
+                      className="inline-edit-input"
+                      type="url"
+                      value={editingOriginalUrl}
+                      onChange={(e) => setEditingOriginalUrl(e.target.value)}
+                      onKeyDown={(e) => handleEditKeyDown(e, link.id)}
+                      autoFocus
+                    />
+                  ) : (
+                    link.original_url
+                  )}
+                </td>
                 <td>{link.hits_count}</td>
                 <td>{new Date(link.created_at).toLocaleDateString()}</td>
+                <td className="table-actions">
+                  {editingLinkId === link.id ? (
+                    <>
+                      <button
+                        onClick={() => handleSaveEdit(link.id)}
+                        disabled={savingLinkId === link.id}
+                        title="Save"
+                      >
+                        <Check size={18} color="green" />
+                      </button>
+                      <button onClick={handleCancelEdit} title="Cancel">
+                        <X size={18} color="gray" />
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button onClick={() => handleEdit(link)} title="Edit">
+                        <Pencil size={18} color="blue" />
+                      </button>
+                      <button onClick={() => handleDelete(link.id)} title="Delete">
+                        <Trash2 size={18} color="red" />
+                      </button>
+                    </>
+                  )}
+                </td>
               </tr>
             ))}
         </tbody>
@@ -109,3 +245,4 @@ export default function LinksTable() {
     </section>
   );
 }
+
