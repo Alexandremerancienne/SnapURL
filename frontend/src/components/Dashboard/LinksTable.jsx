@@ -106,9 +106,9 @@ export default function LinksTable() {
     }
   };
 
-  const handleCopy = async (shortUrl, id) => {
+  const handleCopy = async (slug, id) => {
     try {
-      await navigator.clipboard.writeText(shortUrl);
+      await navigator.clipboard.writeText(slug);
 
       setCopiedId(id);
 
@@ -161,7 +161,7 @@ export default function LinksTable() {
               <tr key={link.id}>
                 <td className="table-link-blue table-actions">
                   {link.short_url}{" "}
-                  <button onClick={() => handleCopy(link.short_url, link.id)}>
+                  <button onClick={() => handleCopy(link.slug, link.id)}>
                     <div className="copy-content">
                       <Copy size={18} />
                       {copiedId === link.id ? "Copied!" : ""}
@@ -203,7 +203,10 @@ export default function LinksTable() {
                       <button onClick={() => handleEdit(link)} title="Edit">
                         <Pencil size={18} color="blue" />
                       </button>
-                      <button onClick={() => handleDelete(link.id)} title="Delete">
+                      <button
+                        onClick={() => handleDelete(link.id)}
+                        title="Delete"
+                      >
                         <Trash2 size={18} color="red" />
                       </button>
                     </>
@@ -245,4 +248,3 @@ export default function LinksTable() {
     </section>
   );
 }
-
