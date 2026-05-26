@@ -4,6 +4,7 @@ import {
   deleteDashboardLink,
   updateDashboardLink,
 } from "../../api/dashboard";
+import PaginationComponent from "./Pagination";
 import { Search, Pencil, Trash2, Copy, Check, X } from "lucide-react";
 import UrlShortener from "../UrlShortener/UrlShortener";
 
@@ -15,6 +16,7 @@ export default function LinksTable() {
   const [editingLinkId, setEditingLinkId] = useState(null);
   const [editingOriginalUrl, setEditingOriginalUrl] = useState("");
   const [savingLinkId, setSavingLinkId] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     const fetchLinks = async () => {
@@ -29,6 +31,8 @@ export default function LinksTable() {
     setShowModal(true);
   };
 
+  const itemsPerPage = 5;
+
   const filteredLinks = Array.isArray(links)
     ? links.filter(
         (link) =>
@@ -36,6 +40,11 @@ export default function LinksTable() {
           link.original_url.toLowerCase().includes(search.toLowerCase()),
       )
     : [];
+
+  const currentItems = filteredLinks.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage,
+  );
 
   const handleEdit = (link) => {
     setEditingLinkId(link.id);
@@ -156,8 +165,8 @@ export default function LinksTable() {
         </thead>
 
         <tbody>
-          {Array.isArray(filteredLinks) &&
-            filteredLinks.map((link) => (
+          {Array.isArray(currentItems) &&
+            currentItems.map((link) => (
               <tr key={link.id}>
                 <td className="table-link-blue table-actions">
                   {link.short_url}{" "}
@@ -216,6 +225,13 @@ export default function LinksTable() {
             ))}
         </tbody>
       </table>
+
+      <PaginationComponent
+        items={filteredLinks}
+        itemsPerPage={itemsPerPage}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+      />
 
       {showModal && (
         <div className="modal-overlay">
