@@ -95,3 +95,26 @@ class LinkSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShortLink
         fields = ("id", "original_url", "short_url", "slug", "created_at", "hits_count")
+        read_only_fields = ("id", "short_url", "created_at", "hits_count")
+
+    def validate_slug(self, value):
+        if not re.fullmatch(r"[A-Za-z0-9-]{3,30}", value):
+            raise serializers.ValidationError(
+                "Slug must contain only letters, numbers and hyphens."
+            )
+
+        return value
+
+    def update(self, instance, validated_data):
+        original_url = validated_data.get("original_url", instance.original_url)
+        slug = validated_data.get("slug", instance.slug)
+
+        if "original_url" in validated_data or "slug" in validated_data:
+            validated_data["short_url"] = unique_short_url(
+                original_url,
+                slug,
+                exclude_pk=instance.pk,
+            )
+
+        return super().update(instance, validated_data)
+
