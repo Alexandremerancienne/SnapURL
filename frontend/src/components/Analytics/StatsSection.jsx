@@ -1,20 +1,7 @@
 import { Users, MousePointerClick, Clock } from "lucide-react";
-import { useEffect, useState } from "react";
-import { getAnalyticsOverview } from "../../api/analytics";
 import { formatDistanceToNow } from "date-fns";
 
-export default function StatsSection() {
-  const [stats, setStats] = useState(null);
-
-  useEffect(() => {
-    const fetchStats = async () => {
-      const data = await getAnalyticsOverview();
-      setStats(data.stats);
-    };
-
-    fetchStats();
-  }, []);
-
+export default function StatsSection({ stats }) {
   return (
     <section className="stats-section">
       <div className="stat-card">

@@ -9,8 +9,6 @@ import {
 
 import { useEffect, useState, useCallback } from "react";
 
-import { getAnalyticsOverview } from "../../../api/analytics";
-
 import countries from "i18n-iso-countries";
 import enLocale from "i18n-iso-countries/langs/en.json";
 
@@ -50,23 +48,8 @@ function CustomYAxisTick({ x, y, payload, countriesData }) {
   );
 }
 
-export default function TopCountriesChart() {
-  const [stats, setStats] = useState(null);
-
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const data = await getAnalyticsOverview();
-        setStats(data);
-      } catch (error) {
-        console.error("Failed to fetch country stats:", error);
-      }
-    };
-
-    fetchStats();
-  }, []);
-
-  const formattedData = stats?.top_countries.map((item) => ({
+export default function TopCountriesChart({ stats }) {
+  const formattedData = stats?.top_countries?.map((item) => ({
     ...item,
     countryLabel: getCountryName(item.country),
   }));
