@@ -1,37 +1,22 @@
 import { api } from "./axios";
 
-export const getAnalyticsStats = async () => {
+// Add interceptor to include the access token in the Authorization header for all requests
+api.interceptors.request.use((config) => {
   const token = localStorage.getItem("access");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
-  const response = await api.get("analytics/stats/", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  return response.data;
+// Helper function to make GET requests and return the data
+const get = async (url) => {
+  const { data } = await api.get(url);
+  return data;
 };
 
-export const getClicksStats = async () => {
-  const token = localStorage.getItem("access");
+export const getAnalyticsStats = () => get("analytics/stats/");
 
-  const response = await api.get("analytics/clicks/", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+export const getClicksStats = () => get("analytics/clicks/");
 
-  return response.data;
-};
-
-export const getCountryStats = async () => {
-  const token = localStorage.getItem("access");
-
-  const response = await api.get("analytics/countries/", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  return response.data;
-};
+export const getCountryStats = () => get("analytics/countries/");

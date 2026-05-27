@@ -116,12 +116,11 @@ class DashboardUsernameView(APIView):
     def get(self, request):
         return Response({"username": request.user.username})
 
-
-class AnalyticsStatsView(APIView):
-    authentication_classes = [JWTAuthentication]
+class AnalyticsViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
+    @action(detail=False, methods=["get"], url_path="stats")
+    def stats(self, request):
         user_links = ShortLink.objects.filter(owner=request.user)
 
         stats = user_links.aggregate(
@@ -132,11 +131,8 @@ class AnalyticsStatsView(APIView):
 
         return Response(stats)
 
-class AnalyticsClicksView(APIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
+    @action(detail=False, methods=["get"], url_path="clicks")
+    def clicks(self, request):
         clicks = (
             Hit.objects.filter(link__owner=request.user)
             .annotate(date=TruncDate("clicked_at"))
@@ -149,11 +145,8 @@ class AnalyticsClicksView(APIView):
             "daily_clicks": list(clicks)
         })
 
-class AnalyticsCountriesView(APIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
+    @action(detail=False, methods=["get"], url_path="countries")
+    def countries(self, request):
         countries = (
             Hit.objects.filter(link__owner=request.user)
             .values("country")
