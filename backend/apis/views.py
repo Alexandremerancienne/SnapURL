@@ -1,6 +1,6 @@
 from datetime import timedelta
 
-from django.db.models import Count, Q, Max
+from django.db.models import Count, Q, Max, Sum
 from django.db.models.functions import TruncDate
 from django.utils import timezone
 from rest_framework import generics, status, viewsets
@@ -147,4 +147,25 @@ class AnalyticsClicksView(APIView):
 
         return Response({
             "daily_clicks": list(clicks)
+        })
+
+class AnalyticsCountriesView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        countries = (
+            Hit.objects.filter(link__owner=request.user)
+            .values("country")
+            .annotate(count=Count("id"))
+            .order_by("-count", "country")
+        )
+
+        total_clicks = countries.aggregate(
+            total=Sum("count")
+        )["total"] or 0
+
+        return Response({
+            "top_countries": list(countries),
+            "total_clicks": total_clicks
         })
