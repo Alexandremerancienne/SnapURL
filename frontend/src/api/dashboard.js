@@ -1,61 +1,12 @@
-import { api } from "./axios";
+import { get, patch, del } from "./apiClient";
 
-export const getDashboardStats = async () => {
-  const token = localStorage.getItem("access");
+export const getDashboardStats = () => get("dashboard/stats/");
 
-  const response = await api.get("dashboard/stats/", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+export const getUserName = () => get("dashboard/username/");
 
-  return response.data;
-};
+export const getDashboardLinks = () => get("dashboard/links/");
 
-export const getUserName = async () => {
-  const token = localStorage.getItem("access");
-  const response = await api.get("dashboard/username/", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+export const deleteDashboardLink = (linkId) => del(`links/${linkId}/`);
 
-  return response.data;
-};
-
-export const getDashboardLinks = async () => {
-  const token = localStorage.getItem("access");
-
-  const response = await api.get("dashboard/links/", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  return response.data;
-};
-
-export const deleteDashboardLink = async (linkId) => {
-  const token = localStorage.getItem("access");
-
-  const response = await api.delete(`links/${linkId}/`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  return response.data;
-};
-
-export const updateDashboardLink = async (linkId, data) => {
-  const token = localStorage.getItem("access");
-
-  const response = await api.patch(`links/${linkId}/`, data, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  return response.data;
-};
-
+export const updateDashboardLink = (linkId, payload) =>
+  patch(`links/${linkId}/`, payload);
