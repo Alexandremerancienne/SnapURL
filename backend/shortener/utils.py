@@ -19,11 +19,13 @@ def get_client_ip(request):
 
 def get_country_code(ip):
     if not ip:
+        print("No IP address provided.")
         return ""
 
     try:
-        response = requests.get(f"https://ipinfo.io/{ip}/json", timeout=2)
+        response = requests.get(f"https://ipinfo.io/lite/me/{ip}", timeout=2)
         data = response.json()
         return data.get("country") or ""
-    except Exception:
+    except Exception as e:
+        print(f"Error fetching country code for IP {ip}: {e}")
         return ""
