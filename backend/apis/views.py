@@ -116,13 +116,13 @@ class DashboardUsernameView(APIView):
     def get(self, request):
         return Response({"username": request.user.username})
 
-
-class AnalyticsStatsView(APIView):
-    authentication_classes = [JWTAuthentication]
+class AnalyticsViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
+    @action(detail=False, methods=["get"], url_path="overview")
+    def overview(self, request):
         user_links = ShortLink.objects.filter(owner=request.user)
+        hits = Hit.objects.filter(link__owner=request.user)
 
         stats = user_links.aggregate(
             total_clicks=Count("hits"),
@@ -130,33 +130,15 @@ class AnalyticsStatsView(APIView):
             last_click=Max("hits__clicked_at"),
         )
 
-        return Response(stats)
-
-class AnalyticsClicksView(APIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
         clicks = (
-            Hit.objects.filter(link__owner=request.user)
-            .annotate(date=TruncDate("clicked_at"))
+            hits.annotate(date=TruncDate("clicked_at"))
             .values("date")
             .annotate(count=Count("id"))
             .order_by("date")
         )
 
-        return Response({
-            "daily_clicks": list(clicks)
-        })
-
-class AnalyticsCountriesView(APIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
         countries = (
-            Hit.objects.filter(link__owner=request.user)
-            .values("country")
+            hits.values("country")
             .annotate(count=Count("id"))
             .order_by("-count", "country")
         )
@@ -166,6 +148,10 @@ class AnalyticsCountriesView(APIView):
         )["total"] or 0
 
         return Response({
+            "stats": stats, 
+            "daily_clicks": list(clicks), 
             "top_countries": list(countries),
             "total_clicks": total_clicks
-        })
+            })
+
+
