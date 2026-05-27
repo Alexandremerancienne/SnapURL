@@ -23,3 +23,15 @@ export const getClicksStats = async () => {
 
   return response.data;
 };
+
+export const getCountryStats = async () => {
+  const token = localStorage.getItem("access");
+
+  const response = await api.get("analytics/countries/", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+};

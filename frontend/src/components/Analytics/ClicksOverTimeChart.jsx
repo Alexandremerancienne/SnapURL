@@ -23,7 +23,7 @@ export default function ClicksOverTimeChart() {
 
   return (
     <section className="clicks-over-time-chart">
-      <h5>Clicks Over Time Chart</h5>
+      <h5>Clicks Over Time</h5>
       {stats && (
         <ResponsiveContainer width="100%" height={300}>
           <LineChart data={stats.daily_clicks}>
