@@ -7,14 +7,14 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { useEffect, useState } from "react";
-import { getClicksStats } from "../../api/analytics";
+import { getAnalyticsOverview } from "../../api/analytics";
 
 export default function ClicksOverTimeChart() {
   const [stats, setStats] = useState(null);
 
   useEffect(() => {
     const fetchStats = async () => {
-      const data = await getClicksStats();
+      const data = await getAnalyticsOverview();
       setStats(data);
     };
 

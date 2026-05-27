@@ -1,6 +1,6 @@
 import { Users, MousePointerClick, Clock } from "lucide-react";
 import { useEffect, useState } from "react";
-import { getAnalyticsStats } from "../../api/analytics";
+import { getAnalyticsOverview } from "../../api/analytics";
 import { formatDistanceToNow } from "date-fns";
 
 export default function StatsSection() {
@@ -8,8 +8,8 @@ export default function StatsSection() {
 
   useEffect(() => {
     const fetchStats = async () => {
-      const data = await getAnalyticsStats();
-      setStats(data);
+      const data = await getAnalyticsOverview();
+      setStats(data.stats);
     };
 
     fetchStats();
