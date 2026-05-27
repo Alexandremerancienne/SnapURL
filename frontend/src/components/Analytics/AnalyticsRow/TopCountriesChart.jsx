@@ -9,7 +9,7 @@ import {
 
 import { useEffect, useState, useCallback } from "react";
 
-import { getCountryStats } from "../../../api/analytics";
+import { getAnalyticsOverview } from "../../../api/analytics";
 
 import countries from "i18n-iso-countries";
 import enLocale from "i18n-iso-countries/langs/en.json";
@@ -56,7 +56,7 @@ export default function TopCountriesChart() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const data = await getCountryStats();
+        const data = await getAnalyticsOverview();
         setStats(data);
       } catch (error) {
         console.error("Failed to fetch country stats:", error);

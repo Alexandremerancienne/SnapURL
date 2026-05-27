@@ -15,8 +15,4 @@ const get = async (url) => {
   return data;
 };
 
-export const getAnalyticsStats = () => get("analytics/stats/");
-
-export const getClicksStats = () => get("analytics/clicks/");
-
-export const getCountryStats = () => get("analytics/countries/");
+export const getAnalyticsOverview = () => get("analytics/overview/");
