@@ -1,8 +1,8 @@
 from django.shortcuts import redirect, render
 
-from .models import Hit, ShortLink
-from .utils import get_client_ip, get_country_code, hash_ip
-
+from .models import ShortLink
+from .utils import get_client_ip
+from .tasks import create_hit
 
 def redirect_short_link(request, slug):
     try:
@@ -12,10 +12,6 @@ def redirect_short_link(request, slug):
 
     ip = get_client_ip(request)
 
-    Hit.objects.create(
-        link=link,
-        country=get_country_code(ip),
-        referrer=request.META.get("HTTP_REFERER", "")[:512],
-        ip_hash=hash_ip(ip),
-    )
+    create_hit.delay(link.id, ip, request.META.get("HTTP_REFERER", "")[:512])
+
     return redirect(link.original_url)
