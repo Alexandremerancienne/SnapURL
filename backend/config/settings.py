@@ -183,3 +183,5 @@ CSRF_TRUSTED_ORIGINS = env_list(
     "DJANGO_CSRF_TRUSTED_ORIGINS",
     "http://localhost:3000,http://localhost:5173",
 )
+
+CELERY_BROKER_URL = "redis://redis:6379/0"
