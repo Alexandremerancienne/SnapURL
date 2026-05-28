@@ -9,6 +9,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from .throttles import LinkCreateThrottle, AuthenticationThrottle, StatsOverviewThrottle
 from shortener.models import ShortLink, Hit
 
 from .serializers import (
@@ -23,6 +24,7 @@ from .serializers import (
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
     permission_classes = [AllowAny]
+    throttle_classes = [AuthenticationThrottle]
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -41,6 +43,14 @@ class LogoutView(APIView):
 
 
 class LinkViewSet(viewsets.ModelViewSet):
+
+    def get_throttles(self):
+        if self.action == "create":
+            return [LinkCreateThrottle()]
+        if self.action == "stats":
+            return [StatsOverviewThrottle()]
+        return []
+    
     def get_permissions(self):
         if self.action == "create":
             return [AllowAny()]
@@ -94,6 +104,7 @@ class LinkViewSet(viewsets.ModelViewSet):
 class DashboardStatsView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
+    throttle_classes = [StatsOverviewThrottle]
 
     def get(self, request):
         user_links = ShortLink.objects.filter(owner=request.user)
@@ -117,7 +128,8 @@ class DashboardUsernameView(APIView):
         return Response({"username": request.user.username})
 
 class AnalyticsViewSet(viewsets.ViewSet):
-    permission_classes = [IsAuthenticated]
+    throttle_classes = [StatsOverviewThrottle]
+
 
     @action(detail=False, methods=["get"], url_path="overview")
     def overview(self, request):
