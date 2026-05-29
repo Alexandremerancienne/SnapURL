@@ -4,20 +4,24 @@ export default function PaginationComponent({
   currentPage,
   setCurrentPage,
 }) {
-  const totalPages = Math.ceil(items.length / itemsPerPage);
+  const totalItems = items.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const hasItems = totalItems > 0;
+  const startItem = hasItems ? (currentPage - 1) * itemsPerPage + 1 : 0;
+  const endItem = hasItems
+    ? Math.min(currentPage * itemsPerPage, totalItems)
+    : 0;
 
   return (
     <div className="pagination">
       <span className="pagination-info">
-        Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
-        {Math.min(currentPage * itemsPerPage, items.length)} of {items.length}{" "}
-        links
+        Showing {startItem} to {endItem} of {totalItems} links
       </span>
 
       <div className="pagination-buttons">
         <button
           className="pagination-button"
-          disabled={currentPage === 1}
+          disabled={!hasItems || currentPage === 1}
           onClick={() => setCurrentPage((prev) => prev - 1)}
         >
           {"<"}
@@ -45,7 +49,7 @@ export default function PaginationComponent({
 
         <button
           className="pagination-button"
-          disabled={currentPage === totalPages}
+          disabled={!hasItems || currentPage === totalPages}
           onClick={() => setCurrentPage((prev) => prev + 1)}
         >
           {">"}
