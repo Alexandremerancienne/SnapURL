@@ -1,6 +1,6 @@
 from datetime import timedelta
 
-from django.db.models import Count, Q, Max, Sum
+from django.db.models import Count, Max, Q, Sum
 from django.db.models.functions import TruncDate
 from django.utils import timezone
 from rest_framework import generics, status, viewsets
@@ -9,8 +9,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from .throttles import LinkCreateThrottle, AuthenticationThrottle, StatsOverviewThrottle
-from shortener.models import ShortLink, Hit
+from shortener.models import Hit, ShortLink
 
 from .serializers import (
     LinkCreateSerializer,
@@ -19,6 +18,7 @@ from .serializers import (
     RegisterSerializer,
     UserSerializer,
 )
+from .throttles import AuthenticationThrottle, LinkCreateThrottle, StatsOverviewThrottle
 
 
 class RegisterView(generics.CreateAPIView):
@@ -50,7 +50,7 @@ class LinkViewSet(viewsets.ModelViewSet):
         if self.action == "stats":
             return [StatsOverviewThrottle()]
         return []
-    
+
     def get_permissions(self):
         if self.action == "create":
             return [AllowAny()]
@@ -65,9 +65,11 @@ class LinkViewSet(viewsets.ModelViewSet):
         if not self.request.user.is_authenticated:
             return ShortLink.objects.none()
 
-        return ShortLink.objects.filter(owner=self.request.user).annotate(
-            hits_count=Count("hits")
-        ).order_by("-created_at")
+        return (
+            ShortLink.objects.filter(owner=self.request.user)
+            .annotate(hits_count=Count("hits"))
+            .order_by("-created_at")
+        )
 
     def perform_create(self, serializer):
         owner = self.request.user if self.request.user.is_authenticated else None
@@ -127,9 +129,9 @@ class DashboardUsernameView(APIView):
     def get(self, request):
         return Response({"username": request.user.username})
 
+
 class AnalyticsViewSet(viewsets.ViewSet):
     throttle_classes = [StatsOverviewThrottle]
-
 
     @action(detail=False, methods=["get"], url_path="overview")
     def overview(self, request):
@@ -155,15 +157,13 @@ class AnalyticsViewSet(viewsets.ViewSet):
             .order_by("-count", "country")
         )
 
-        total_clicks = countries.aggregate(
-            total=Sum("count")
-        )["total"] or 0
+        total_clicks = countries.aggregate(total=Sum("count"))["total"] or 0
 
-        return Response({
-            "stats": stats, 
-            "daily_clicks": list(clicks), 
-            "top_countries": list(countries),
-            "total_clicks": total_clicks
-            })
-
-
+        return Response(
+            {
+                "stats": stats,
+                "daily_clicks": list(clicks),
+                "top_countries": list(countries),
+                "total_clicks": total_clicks,
+            }
+        )
