@@ -1,8 +1,9 @@
 from django.shortcuts import redirect, render
 
 from .models import ShortLink
-from .utils import get_client_ip
 from .tasks import create_hit
+from .utils import get_client_ip
+
 
 def redirect_short_link(request, slug):
     try:

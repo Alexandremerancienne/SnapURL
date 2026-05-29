@@ -17,7 +17,3 @@ def create_hit(link_id, ip, referrer):
         referrer=referrer[:512],
         ip_hash=hash_ip(ip),
     )
-
-
-
-    
