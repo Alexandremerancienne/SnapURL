@@ -98,13 +98,13 @@ flowchart LR
 
 This is the most important distinction in the repository.
 
-| Concern               | Local development                       | Production-oriented stack                       |
-| --------------------- | --------------------------------------- | ----------------------------------------------- |
-| Django settings       | `config.settings.dev`                   | `config.settings.prod`                          |
-| Backend server        | `runserver`                             | `uWSGI`                                         |
-| Public entrypoint     | Frontend on `:5173`, backend on `:8000` | Nginx on `:80`                                  |
-| Frontend mode         | Vite development server                 | `vite build` + `vite preview`                   |
-| API base URL          | `http://localhost:8000/api/v1`          | `/api/v1/` through Nginx                        |           |
+| Concern           | Local development                       | Production-oriented stack     |
+| ----------------- | --------------------------------------- | ----------------------------- | --- |
+| Django settings   | `config.settings.dev`                   | `config.settings.prod`        |
+| Backend server    | `runserver`                             | `uWSGI`                       |
+| Public entrypoint | Frontend on `:5173`, backend on `:8000` | Nginx on `:80`                |
+| Frontend mode     | Vite development server                 | `vite build` + `vite preview` |
+| API base URL      | `http://localhost:8000/api/v1`          | `/api/v1/` through Nginx      |     |
 
 ### Local Development Characteristics
 
@@ -265,10 +265,22 @@ just prod-superuser
 
 ### Nginx still serves the default welcome page
 
-If Nginx was already running before the config changed, restart it:
+If Nginx was already running before the config changed - this can happen in particular when running `just prod` after `just dev` - restart it:
 
 ```bash
 docker compose --env-file .env.prod -f docker-compose.yml -f docker-compose.prod.yml restart nginx
+```
+
+or with just:
+
+```bash
+just nginx
+```
+
+then
+
+```bash
+just prod
 ```
 
 ## Production Hardening Notes
