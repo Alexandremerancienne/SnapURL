@@ -271,18 +271,6 @@ If Nginx was already running before the config changed - this can happen in part
 docker compose --env-file .env.prod -f docker-compose.yml -f docker-compose.prod.yml restart nginx
 ```
 
-or with just:
-
-```bash
-just nginx
-```
-
-then
-
-```bash
-just prod
-```
-
 ## Production Hardening Notes
 
 The current production-oriented stack is suitable for deployment testing, but a real internet-facing deployment should also include:
