@@ -1,4 +1,4 @@
-FROM python:3.13-slim
+FROM python:3.11-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
@@ -15,9 +15,10 @@ RUN pip install --upgrade pip \
     && pip install -r /tmp/requirements.txt
 
 COPY backend/ /app/
+COPY deploy/ /app/deploy/
 
 EXPOSE 8000
 
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["uwsgi", "--ini", "app/deploy/uwsgi.ini"]
 
 
