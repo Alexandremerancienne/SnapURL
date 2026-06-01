@@ -6,7 +6,7 @@ set quiet
 # =========================
 
 compose := "docker compose"
-compose_prod := "docker compose -f docker-compose.yml -f docker-compose.prod.yml"
+compose_prod := "docker compose --env-file .env.prod -f docker-compose.yml -f docker-compose.prod.yml"
 
 
 # =========================

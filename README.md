@@ -127,6 +127,18 @@ Production-oriented mode is designed to mimic how the application should be serv
 - production settings are loaded from `config.settings.prod`
 - secure settings are environment-driven so you can test locally before enabling full HTTPS enforcement
 
+## Environment Variables
+
+Docker Compose automatically reads `.env` for the local development stack.
+
+The production-oriented stack uses `.env.prod` explicitly:
+
+```bash
+docker compose --env-file .env.prod -f docker-compose.yml -f docker-compose.prod.yml up --build
+```
+
+The `just` production commands use the same compose arguments. Keep real production secrets out of Git; `.env` and `.env.prod` are ignored by this repository.
+
 ## Running Locally
 
 ### Prerequisites
@@ -160,22 +172,40 @@ just dev
 
 ### Start the Production-Oriented Stack
 
-Use the production compose file directly:
+Use the production compose files directly:
 
 ```bash
-docker compose --env-file .env.prod -f docker-compose.prod.yml up -d --build
+docker compose --env-file .env.prod -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+```
+
+Or with `just`:
+
+```bash
+just prod
 ```
 
 ### Stop It
 
 ```bash
-docker compose --env-file .env.prod -f docker-compose.prod.yml down
+docker compose --env-file .env.prod -f docker-compose.yml -f docker-compose.prod.yml down
+```
+
+Or with `just`:
+
+```bash
+just prod-down
 ```
 
 ### View Logs
 
 ```bash
-docker compose --env-file .env.prod -f docker-compose.prod.yml logs -f
+docker compose --env-file .env.prod -f docker-compose.yml -f docker-compose.prod.yml logs -f
+```
+
+Or with `just`:
+
+```bash
+just prod-logs
 ```
 
 ### Production-Oriented Endpoints
@@ -203,10 +233,14 @@ docker compose logs -f backend
 ### Production-Oriented Compose
 
 ```bash
-docker compose --env-file .env.prod -f docker-compose.prod.yml up -d --build
-docker compose --env-file .env.prod -f docker-compose.prod.yml down
-docker compose --env-file .env.prod -f docker-compose.prod.yml logs -f
-docker compose --env-file .env.prod -f docker-compose.prod.yml exec backend python manage.py createsuperuser
+docker compose --env-file .env.prod -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+docker compose --env-file .env.prod -f docker-compose.yml -f docker-compose.prod.yml down
+docker compose --env-file .env.prod -f docker-compose.yml -f docker-compose.prod.yml logs -f
+docker compose --env-file .env.prod -f docker-compose.yml -f docker-compose.prod.yml exec backend python manage.py createsuperuser
+just prod
+just prod-down
+just prod-logs
+just prod-superuser
 ```
 
 ## Validation Checklist
@@ -234,7 +268,7 @@ docker compose --env-file .env.prod -f docker-compose.prod.yml exec backend pyth
 If Nginx was already running before the config changed, restart it:
 
 ```bash
-docker compose --env-file .env.prod -f docker-compose.prod.yml restart nginx
+docker compose --env-file .env.prod -f docker-compose.yml -f docker-compose.prod.yml restart nginx
 ```
 
 ## Production Hardening Notes
