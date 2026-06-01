@@ -13,6 +13,13 @@ def env_list(name, default=""):
         if item.strip()
     ]
 
+
+def env_bool(name, default=False):
+    value = os.getenv(name)
+    if value is None:
+        return default
+    return value.strip().lower() in {"1", "true", "yes", "on"}
+
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", None)
 if not SECRET_KEY:
     raise ImproperlyConfigured("DJANGO_SECRET_KEY is required")
@@ -136,6 +143,7 @@ DATABASES = {
 
 CONN_MAX_AGE = 60
 
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # ======================
 # I18N
